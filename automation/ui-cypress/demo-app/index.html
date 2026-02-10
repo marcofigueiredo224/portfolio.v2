@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Demo QA - Botão desabilitado</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:40px;max-width:720px}
+    label{display:block;margin:10px 0 6px;font-weight:600}
+    input,select{padding:10px 12px;border:1px solid #ccc;border-radius:10px;width:100%;max-width:460px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:680px}
+    .btn{margin-top:16px;padding:12px 14px;border-radius:12px;border:1px solid #999;background:#111;color:#fff;cursor:pointer}
+    .blue-btn-disabled{opacity:.45;cursor:not-allowed}
+    .hint{margin-top:10px;color:#555}
+  </style>
+</head>
+<body>
+  <h1>Demo: Convidar Usuários</h1>
+  <p>Esta página existe só para demonstrar automação de UI (classe <code>blue-btn-disabled</code>).</p>
+
+  <div class="row">
+    <div>
+      <label for="nome">Nome *</label>
+      <input id="nome" type="text" />
+    </div>
+    <div>
+      <label for="email">E-mail *</label>
+      <input id="email" type="email" />
+    </div>
+    <div>
+      <label for="filial">Filial *</label>
+      <select id="filial">
+        <option value="">Selecione</option>
+        <option value="matriz">Matriz</option>
+      </select>
+    </div>
+    <div>
+      <label for="perfil">Perfil *</label>
+      <select id="perfil">
+        <option value="">Selecione</option>
+        <option value="operador">Operador</option>
+      </select>
+    </div>
+  </div>
+
+  <button id="enviar" class="btn blue-btn-disabled" disabled>Enviar convite(s)</button>
+  <div class="hint" id="hint">Preencha todos os campos obrigatórios para habilitar.</div>
+
+  <script>
+    const fields = ['nome','email','filial','perfil'].map(id => document.getElementById(id));
+    const btn = document.getElementById('enviar');
+    const hint = document.getElementById('hint');
+
+    function isValidEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);}
+
+    function validate(){
+      const [nome,email,filial,perfil] = fields.map(f => (f.value || '').trim());
+      const ok = nome.length > 0 && isValidEmail(email) && filial.length > 0 && perfil.length > 0;
+
+      btn.disabled = !ok;
+      btn.classList.toggle('blue-btn-disabled', !ok);
+      hint.textContent = ok ? 'Pronto para enviar.' : 'Preencha todos os campos obrigatórios para habilitar.';
+    }
+
+    fields.forEach(f => f.addEventListener('input', validate));
+    fields.forEach(f => f.addEventListener('change', validate));
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (btn.disabled) return;
+      alert('Convites enviados (demo).');
+    });
+  </script>
+</body>
+</html>
